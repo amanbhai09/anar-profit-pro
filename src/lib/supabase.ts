@@ -1,17 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
-
-// Safe defaults to prevent errors
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://demo.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
-
-// Create Supabase client with safe defaults
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Use the integrated Supabase client
+export { supabase } from '@/integrations/supabase/client';
 
 // Helper function to check if Supabase is properly configured
 export const isSupabaseConfigured = () => {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  return !!(url && key && !url.includes('demo') && url.includes('supabase'));
+  return true; // Always configured with integrated client
 };
 
 export type Database = {

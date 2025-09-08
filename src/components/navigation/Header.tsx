@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -10,12 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AuthModal } from '@/components/auth/AuthModal';
 import { LogOut, User, Calculator, History } from 'lucide-react';
 
 export const Header = () => {
   const { user, signOut } = useAuth();
-  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -35,8 +34,7 @@ export const Header = () => {
   };
 
   return (
-    <>
-      <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border sticky top-0 z-50">
+    <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center space-x-2">
             <Calculator className="h-6 w-6 text-primary" />
@@ -87,18 +85,12 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => setAuthModalOpen(true)}>
-                Sign In
+              <Button asChild variant="hero" size="sm">
+                <Link to="/auth">Sign In</Link>
               </Button>
             )}
           </div>
         </div>
       </header>
-
-      <AuthModal 
-        isOpen={authModalOpen} 
-        onClose={() => setAuthModalOpen(false)} 
-      />
-    </>
   );
 };

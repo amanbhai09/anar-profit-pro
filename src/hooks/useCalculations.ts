@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { CalculationResult } from '@/types/calculator';
 import { useToast } from '@/hooks/use-toast';
@@ -25,20 +25,7 @@ export const useCalculations = () => {
     try {
       setLoading(true);
       
-      // Check if Supabase is properly configured
-      if (!isSupabaseConfigured()) {
-        console.log('Using local storage for calculations');
-        const localData = localStorage.getItem('anar-calculations');
-        if (localData) {
-          const parsedData = JSON.parse(localData).map((calc: any) => ({
-            ...calc,
-            timestamp: new Date(calc.timestamp)
-          }));
-          setCalculations(parsedData);
-        }
-        setLoading(false);
-        return;
-      }
+      // Supabase is always configured with integrated client
 
       const { data, error } = await supabase
         .from('calculations')
@@ -57,7 +44,7 @@ export const useCalculations = () => {
         buyerContact: calc.buyer_contact,
         tripId: calc.trip_id,
         notes: calc.notes,
-        grades: calc.grades,
+        grades: calc.grades as any, // Cast to any to handle JSONB type
         totalBoxes: calc.total_boxes,
         grossSale: calc.gross_sale,
         commissionAmt: calc.commission_amt,
@@ -91,27 +78,6 @@ export const useCalculations = () => {
   };
 
   const saveCalculation = async (calculation: Omit<CalculationResult, 'id'>) => {
-    // If Supabase not configured, save to localStorage
-    if (!isSupabaseConfigured()) {
-      const calculationWithId = {
-        ...calculation,
-        id: crypto.randomUUID(),
-      };
-      
-      const existing = localStorage.getItem('anar-calculations');
-      const calculations = existing ? JSON.parse(existing) : [];
-      calculations.unshift(calculationWithId);
-      localStorage.setItem('anar-calculations', JSON.stringify(calculations));
-      
-      toast({
-        title: 'Success',
-        description: 'Calculation saved locally!',
-      });
-      
-      await fetchCalculations();
-      return calculationWithId.id;
-    }
-
     if (!user) {
       toast({
         variant: 'destructive',
@@ -133,7 +99,7 @@ export const useCalculations = () => {
           buyer_contact: calculation.buyerContact,
           trip_id: calculation.tripId,
           notes: calculation.notes,
-          grades: calculation.grades,
+          grades: calculation.grades as any, // Cast to any to handle JSONB type
           total_boxes: calculation.totalBoxes,
           gross_sale: calculation.grossSale,
           commission_amt: calculation.commissionAmt,

@@ -269,11 +269,11 @@ export const AnarCalculator = () => {
                 <Button onClick={clearAll} variant="outline" size="sm">
                   Clear All
                 </Button>
-                <Button onClick={calculate} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button onClick={calculate} size="sm" className="btn-hero">
                   <Calculator className="w-4 h-4 mr-2" />
                   Calculate
                 </Button>
-                <Button onClick={handleSaveCalculation} size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                <Button onClick={handleSaveCalculation} size="sm" className="btn-success">
                   Save Calculation
                 </Button>
                 <Button onClick={downloadCSV} variant="outline" size="sm">
