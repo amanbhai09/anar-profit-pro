@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { CalculationResult } from '@/types/calculator';
 import { useToast } from '@/hooks/use-toast';
@@ -26,9 +26,8 @@ export const useCalculations = () => {
       setLoading(true);
       
       // Check if Supabase is properly configured
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
-        console.warn('Supabase not configured. Using local storage.');
+      if (!isSupabaseConfigured()) {
+        console.log('Using local storage for calculations');
         const localData = localStorage.getItem('anar-calculations');
         if (localData) {
           const parsedData = JSON.parse(localData).map((calc: any) => ({
@@ -92,10 +91,8 @@ export const useCalculations = () => {
   };
 
   const saveCalculation = async (calculation: Omit<CalculationResult, 'id'>) => {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    
     // If Supabase not configured, save to localStorage
-    if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
+    if (!isSupabaseConfigured()) {
       const calculationWithId = {
         ...calculation,
         id: crypto.randomUUID(),
