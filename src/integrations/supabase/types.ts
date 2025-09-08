@@ -14,6 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
+      calculations: {
+        Row: {
+          buyer_contact: string | null
+          buyer_name: string | null
+          commission: number
+          commission_amt: number
+          created_at: string
+          farmer_contact: string | null
+          farmer_name: string | null
+          farmer_rate_kg: number
+          grades: Json
+          gross_sale: number
+          id: string
+          kg_per_box: number
+          labour: number
+          miscellaneous: number
+          net_sale: number
+          notes: string | null
+          packing: number
+          profit: number
+          timestamp: string
+          total_boxes: number
+          total_cost: number
+          total_labour_cost: number
+          total_packing_cost: number
+          total_transport_cost: number
+          total_utility_cost: number
+          transport: number
+          trip_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          buyer_contact?: string | null
+          buyer_name?: string | null
+          commission: number
+          commission_amt: number
+          created_at?: string
+          farmer_contact?: string | null
+          farmer_name?: string | null
+          farmer_rate_kg: number
+          grades: Json
+          gross_sale: number
+          id?: string
+          kg_per_box: number
+          labour: number
+          miscellaneous: number
+          net_sale: number
+          notes?: string | null
+          packing: number
+          profit: number
+          timestamp?: string
+          total_boxes: number
+          total_cost: number
+          total_labour_cost: number
+          total_packing_cost: number
+          total_transport_cost: number
+          total_utility_cost: number
+          transport: number
+          trip_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          buyer_contact?: string | null
+          buyer_name?: string | null
+          commission?: number
+          commission_amt?: number
+          created_at?: string
+          farmer_contact?: string | null
+          farmer_name?: string | null
+          farmer_rate_kg?: number
+          grades?: Json
+          gross_sale?: number
+          id?: string
+          kg_per_box?: number
+          labour?: number
+          miscellaneous?: number
+          net_sale?: number
+          notes?: string | null
+          packing?: number
+          profit?: number
+          timestamp?: string
+          total_boxes?: number
+          total_cost?: number
+          total_labour_cost?: number
+          total_packing_cost?: number
+          total_transport_cost?: number
+          total_utility_cost?: number
+          transport?: number
+          trip_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -35,6 +131,36 @@ export type Database = {
           id?: never
           sender_id?: string
           thread_id?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
