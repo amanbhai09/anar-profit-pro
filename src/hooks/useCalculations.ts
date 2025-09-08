@@ -24,6 +24,23 @@ export const useCalculations = () => {
 
     try {
       setLoading(true);
+      
+      // Check if Supabase is properly configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
+        console.warn('Supabase not configured. Using local storage.');
+        const localData = localStorage.getItem('anar-calculations');
+        if (localData) {
+          const parsedData = JSON.parse(localData).map((calc: any) => ({
+            ...calc,
+            timestamp: new Date(calc.timestamp)
+          }));
+          setCalculations(parsedData);
+        }
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('calculations')
         .select('*')
@@ -75,6 +92,29 @@ export const useCalculations = () => {
   };
 
   const saveCalculation = async (calculation: Omit<CalculationResult, 'id'>) => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    
+    // If Supabase not configured, save to localStorage
+    if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
+      const calculationWithId = {
+        ...calculation,
+        id: crypto.randomUUID(),
+      };
+      
+      const existing = localStorage.getItem('anar-calculations');
+      const calculations = existing ? JSON.parse(existing) : [];
+      calculations.unshift(calculationWithId);
+      localStorage.setItem('anar-calculations', JSON.stringify(calculations));
+      
+      toast({
+        title: 'Success',
+        description: 'Calculation saved locally!',
+      });
+      
+      await fetchCalculations();
+      return calculationWithId.id;
+    }
+
     if (!user) {
       toast({
         variant: 'destructive',
