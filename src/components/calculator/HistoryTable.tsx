@@ -123,14 +123,14 @@ export const HistoryTable = ({ calculations, onDelete, loading }: HistoryTablePr
               className="flex-1"
             />
             <div className="flex gap-2">
-              <Select value={filters.grade || ''} onValueChange={(value) => 
-                setFilters(prev => ({ ...prev, grade: value || undefined }))
+              <Select value={filters.grade || 'all'} onValueChange={(value) => 
+                setFilters(prev => ({ ...prev, grade: value === 'all' ? undefined : value }))
               }>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Grade" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Grades</SelectItem>
+                  <SelectItem value="all">All Grades</SelectItem>
                   {Array.from(new Set(calculations.flatMap(calc => calc.grades.map(g => g.note))))
                     .sort()
                     .map(grade => (
