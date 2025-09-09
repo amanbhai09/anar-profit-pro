@@ -35,6 +35,8 @@ export interface CalculationResult {
   miscellaneous: number;
   farmerRateKg: number;
   kgPerBox: number;
+  userEmail?: string;
+  userName?: string;
 }
 
 export interface CostSettings {

@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Calculator, History } from 'lucide-react';
+import { LogOut, User, Calculator, History, Shield } from 'lucide-react';
 
 export const Header = () => {
   const { user, signOut } = useAuth();
@@ -76,6 +76,12 @@ export const Header = () => {
                   <DropdownMenuItem>
                     <History className="mr-2 h-4 w-4" />
                     History
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin" className="cursor-pointer">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Admin Panel
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
