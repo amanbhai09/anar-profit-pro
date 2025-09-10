@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LogOut, User, Calculator, History, Shield } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export const Header = () => {
   const { user, signOut } = useAuth();
@@ -42,6 +43,7 @@ export const Header = () => {
           </div>
 
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

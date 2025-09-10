@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,13 +15,17 @@ import {
   IndianRupee,
   Package,
   Trash2,
-  Download
+  Download,
+  Shield,
+  AlertCircle
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/navigation/Header";
 import { CalculationResult } from "@/types/calculator";
+import { useNavigate } from "react-router-dom";
 
 interface UserProfile {
   id: string;
@@ -39,8 +43,10 @@ interface AdminStats {
 }
 
 const Admin = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { profile, loading: profileLoading, isAdmin } = useUserProfile();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [calculations, setCalculations] = useState<CalculationResult[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -48,10 +54,79 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
+    if (!authLoading && !profileLoading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      
+      if (!isAdmin()) {
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "You don't have permission to access the admin panel.",
+        });
+        navigate('/');
+        return;
+      }
+
       fetchAdminData();
     }
-  }, [user]);
+  }, [user, authLoading, profileLoading, isAdmin, navigate]);
+
+  if (authLoading || profileLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5" />
+              Admin Access Required
+            </CardTitle>
+            <CardDescription>
+              Please sign in to access the admin panel.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate('/auth')} className="w-full">
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!isAdmin()) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-destructive" />
+              Access Denied
+            </CardTitle>
+            <CardDescription>
+              You don't have permission to access this page.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate('/')} className="w-full">
+              Go Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const fetchAdminData = async () => {
     try {
@@ -230,8 +305,19 @@ const Admin = () => {
         <Header />
         <div className="container mx-auto px-4 py-8">
           <Card className="max-w-md mx-auto">
-            <CardContent className="pt-6 text-center">
-              <p className="text-muted-foreground">Please sign in to access the admin panel.</p>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                Admin Access Required
+              </CardTitle>
+              <CardDescription>
+                Please sign in to access the admin panel.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => navigate('/auth')} className="w-full">
+                Sign In
+              </Button>
             </CardContent>
           </Card>
         </div>

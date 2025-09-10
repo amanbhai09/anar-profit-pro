@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, BarChart3, Package } from "lucide-react";
+import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, BarChart3, Package, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/navigation/Header";
 import { useCalculations } from "@/hooks/useCalculations";
@@ -18,6 +18,7 @@ import { CostSettings as CostSettingsComponent } from "./CostSettings";
 import { SummaryCards } from "./SummaryCards";
 import { ContactInfo } from "./ContactInfo";
 import { AlertSystem } from "./AlertSystem";
+import { exportCalculationToPDF } from "@/utils/pdfExport";
 
 const defaultGrades: Omit<GradeData, 'id'>[] = [
   { note: '4 dana', boxes: 1, rate: 1890, gross: 1890 },
@@ -234,6 +235,32 @@ export const AnarCalculator = () => {
     });
   };
 
+  const downloadPDF = () => {
+    if (!currentResult) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate first!",
+      });
+      return;
+    }
+
+    try {
+      exportCalculationToPDF(currentResult);
+      toast({
+        title: "Success",
+        description: "PDF downloaded!",
+      });
+    } catch (error) {
+      console.error('PDF export error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate PDF. Please try again.",
+      });
+    }
+  };
+
   // Find highest and lowest grossing grades for highlighting
   const gradesByGross = [...grades].sort((a, b) => b.gross - a.gross);
   const highestGrade = gradesByGross[0];
@@ -278,7 +305,11 @@ export const AnarCalculator = () => {
                 </Button>
                 <Button onClick={downloadCSV} variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
-                  Export CSV
+                  CSV
+                </Button>
+                <Button onClick={downloadPDF} variant="outline" size="sm">
+                  <FileText className="w-4 h-4 mr-2" />
+                  PDF
                 </Button>
               </div>
             </div>

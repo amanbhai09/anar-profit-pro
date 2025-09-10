@@ -132,6 +132,7 @@ export const HistoryTable = ({ calculations, onDelete, loading }: HistoryTablePr
                 <SelectContent>
                   <SelectItem value="all">All Grades</SelectItem>
                   {Array.from(new Set(calculations.flatMap(calc => calc.grades.map(g => g.note))))
+                    .filter(grade => grade && grade.trim() !== '')
                     .sort()
                     .map(grade => (
                       <SelectItem key={grade} value={grade}>{grade}</SelectItem>
