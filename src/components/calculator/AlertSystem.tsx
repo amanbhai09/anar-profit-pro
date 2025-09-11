@@ -33,7 +33,7 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
   }
 
   // Check for high commission
-  if (result && result.commission > 10) {
+  if (result && result.commission > 6) {
     alerts.push({
       type: "warning",
       title: "High Commission",
@@ -41,7 +41,7 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
       icon: AlertTriangle,
     });
   }
-
+  
   // Check for profit
   if (result && result.profit > 0) {
     alerts.push({
@@ -53,11 +53,21 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
   }
 
   // Check for high transport costs
-  if (result && result.transport > 100) {
+  if (result && result.transport > 75) {
     alerts.push({
       type: "info",
       title: "High Transport Cost",
       message: `Transport cost of ₹${result.transport}/box is above average. Total: ₹${result.totalTransportCost.toLocaleString('en-IN')}`,
+      icon: Info,
+    });
+  }
+
+  // Check for high transport costs
+  if (result && result.packing > 70) {
+    alerts.push({
+      type: "info",
+      title: "High Packing cost",
+      message: `Packing cost of ₹${result.packing}/box is above average. Total: ₹${result.totalPackingCost.toLocaleString('en-IN')}`,
       icon: Info,
     });
   }

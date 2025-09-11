@@ -2,76 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Professional Anar Profit Calculator Design System */
+/* User-Friendly Design System – Soft Light & Dark Themes */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @layer base {
   :root {
-    /* Professional color palette */
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Light Theme – Soft whites and grays */
+    --background: 210 20% 97%; /* very soft off-white */
+    --foreground: 210 15% 20%; /* dark gray text */
+    
+    --card: 210 20% 98%;
+    --card-foreground: 210 15% 20%;
+    
+    --popover: 210 20% 96%;
+    --popover-foreground: 210 15% 20%;
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --primary: 217 88% 55%;
+    --primary-foreground: 210 15% 20%;
+    --primary-glow: 217 88% 65%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --secondary: 210 10% 85%;
+    --secondary-foreground: 210 15% 20%;
 
-    /* Primary - Professional blue */
-    --primary: 217 91% 60%;
-    --primary-foreground: 240 10% 3.9%;
-    --primary-glow: 217 91% 65%;
+    --muted: 210 10% 85%;
+    --muted-foreground: 210 10% 50%;
 
-    /* Secondary - Elegant gray */
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --accent: 210 10% 85%;
+    --accent-foreground: 210 15% 20%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --success: 142 60% 45%;
+    --success-foreground: 210 15% 20%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 210 15% 20%;
 
-    /* Success - Profit green */
-    --success: 142 76% 36%;
-    --success-foreground: 355.7 100% 97.3%;
+    --warning: 38 90% 55%;
+    --warning-foreground: 210 15% 20%;
 
-    /* Destructive - Loss red */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    /* Warning - Attention orange */
-    --warning: 38 92% 50%;
-    --warning-foreground: 240 10% 3.9%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 217 91% 60%;
+    --border: 210 15% 80%;
+    --input: 210 10% 90%;
+    --ring: 217 88% 55%;
 
     --radius: 0.75rem;
 
-    /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(142 76% 45%));
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(240 3.7% 20%));
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(142 60% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(210 10% 85%));
 
-    /* Shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
-    --shadow-card: 0 8px 32px hsl(240 10% 3.9% / 0.12);
+    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.3);
+    --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-    /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .dark {
-    /* Keep existing dark theme but enhance with gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 45%));
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(240 3.7% 25%));
-    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.3);
+    /* Dark Theme – Soft blacks and grays */
+    --background: 210 10% 10%; /* dark gray-black */
+    --foreground: 210 10% 90%; /* light gray text */
+
+    --card: 210 10% 12%;
+    --card-foreground: 210 10% 90%;
+
+    --popover: 210 10% 15%;
+    --popover-foreground: 210 10% 90%;
+
+    --primary: 217 88% 45%;
+    --primary-foreground: 210 10% 90%;
+    --primary-glow: 217 88% 55%;
+
+    --secondary: 210 10% 20%;
+    --secondary-foreground: 210 10% 90%;
+
+    --muted: 210 10% 20%;
+    --muted-foreground: 210 10% 70%;
+
+    --accent: 210 10% 20%;
+    --accent-foreground: 210 10% 90%;
+
+    --success: 142 60% 40%;
+    --success-foreground: 210 10% 90%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 210 10% 90%;
+
+    --warning: 38 90% 45%;
+    --warning-foreground: 210 10% 90%;
+
+    --border: 210 10% 25%;
+    --input: 210 10% 20%;
+    --ring: 217 88% 45%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(142 60% 35%));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(210 10% 20%));
+
+    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.3);
+    --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -81,13 +110,12 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground font-inter transition-all duration-300;
     font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
 @layer components {
-  /* Professional button variants */
   .btn-hero {
     @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:shadow-glow transition-all duration-300 hover:scale-105;
   }
@@ -100,7 +128,6 @@
     @apply bg-transparent border border-border/50 text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all duration-300;
   }
 
-  /* Professional card styles */
   .card-elegant {
     @apply bg-gradient-to-br from-card via-card to-secondary/20 border border-border/50 shadow-card backdrop-blur-sm;
   }
@@ -113,7 +140,6 @@
     @apply bg-gradient-to-r from-destructive/10 via-destructive/5 to-red-500/10 border border-destructive/20;
   }
 
-  /* Professional animations */
   .animate-fade-in-up {
     animation: fadeInUp 0.6s ease-out;
   }
@@ -128,7 +154,6 @@
 }
 
 @layer utilities {
-  /* Font utilities */
   .font-inter {
     font-family: 'Inter', system-ui, sans-serif;
   }
@@ -137,7 +162,6 @@
     font-family: 'JetBrains Mono', monospace;
   }
 
-  /* Text gradients */
   .text-gradient-primary {
     @apply bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent;
   }
@@ -147,7 +171,6 @@
   }
 }
 
-/* Keyframes */
 @keyframes fadeInUp {
   from {
     opacity: 0;

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, BarChart3, Package, FileText } from "lucide-react";
+import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, BarChart3, Package, FileText, ShieldCheck, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/navigation/Header";
 import { useCalculations } from "@/hooks/useCalculations";
@@ -18,6 +18,7 @@ import { CostSettings as CostSettingsComponent } from "./CostSettings";
 import { SummaryCards } from "./SummaryCards";
 import { ContactInfo } from "./ContactInfo";
 import { AlertSystem } from "./AlertSystem";
+import { SafeBuyDialog } from "./SafeBuyDialog";
 import { exportCalculationToPDF } from "@/utils/pdfExport";
 import { Footer } from "@/components/ui/footer";
 
@@ -47,6 +48,7 @@ export const AnarCalculator = () => {
   const [costSettings, setCostSettings] = useState<CostSettings>(defaultCostSettings);
   const [currentResult, setCurrentResult] = useState<CalculationResult | undefined>();
   const [showChart, setShowChart] = useState(false);
+  const [showSafeBuyDialog, setShowSafeBuyDialog] = useState(false);
   
   // Contact and transaction info
   const [contactInfo, setContactInfo] = useState({
@@ -312,6 +314,16 @@ export const AnarCalculator = () => {
                   <FileText className="w-4 h-4 mr-2" />
                   PDF
                 </Button>
+                <Button 
+                  onClick={() => setShowSafeBuyDialog(true)} 
+                  variant="outline" 
+                  size="sm"
+                  disabled={!currentResult}
+                  className="bg-green-50 hover:bg-green-100 border-green-200 text-green-700 dark:bg-green-950 dark:hover:bg-green-900 dark:border-green-800 dark:text-green-300"
+                >
+                  <ShieldCheck className="w-4 h-4 mr-2" />
+                  Safe Buy
+                </Button>
               </div>
             </div>
           </CardHeader>
@@ -379,12 +391,28 @@ export const AnarCalculator = () => {
               <ProfitChart data={calculations.slice(0, 10)} />
             )}
 
-            {/* History Table */}
-            <HistoryTable 
-              calculations={calculations}
-              onDelete={deleteCalculation}
-              loading={historyLoading}
-            />
+            {/* History Table - Moved to bottom */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  Calculation History
+                  {calculations.length > 0 && (
+                    <Badge variant="secondary">{calculations.length} records</Badge>
+                  )}
+                </CardTitle>
+                <CardDescription>
+                  View and manage your saved calculations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <HistoryTable 
+                  calculations={calculations}
+                  onDelete={deleteCalculation}
+                  loading={historyLoading}
+                />
+              </CardContent>
+            </Card>
           </div>
 
           {/* Summary Cards */}
@@ -408,7 +436,7 @@ export const AnarCalculator = () => {
                 <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
                 <p>Add grade-wise boxes and broker rates per box</p>
               </div>
-              <div className="flesh items-start gap-3">
+              <div className="flex items-start gap-3">
                 <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
                 <p>Configure cost settings (commission, transport, etc.)</p>
               </div>
@@ -433,7 +461,37 @@ export const AnarCalculator = () => {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Contact Buttons */}
+          <Card className="shadow-card">
+            <CardContent className="pt-6">
+              <div className="flex flex-wrap gap-3">
+                <Button 
+                  onClick={() => window.open('https://t.me/aman25gt', '_blank')} 
+                  variant="outline" 
+                  className="flex-1 min-w-[200px] bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 dark:bg-blue-950 dark:hover:bg-blue-900 dark:border-blue-800 dark:text-blue-300"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Contact @aman25gt
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1 min-w-[200px]"
+                  onClick={() => window.open('#', '_blank')}
+                >
+                  How to Use Guide
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Safe Buy Dialog */}
+        <SafeBuyDialog 
+          isOpen={showSafeBuyDialog}
+          onClose={() => setShowSafeBuyDialog(false)}
+          calculation={currentResult}
+        />
       </div>
       <Footer />
     </div>
