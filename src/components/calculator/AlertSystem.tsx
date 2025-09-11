@@ -41,17 +41,6 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
       icon: AlertTriangle,
     });
   }
-
-  
-  // Check for high packing cost
-  if (result && result.packing > 60) {
-    alerts.push({
-      type: "warning",
-      title: "High Packing Cost",
-      message: `Packing Cost rate of ${result.packing}/box is above average.Consider optimize cost of packing.`,
-      icon: AlertTriangle,
-    });
-  }
   
   // Check for profit
   if (result && result.profit > 0) {
@@ -67,8 +56,18 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
   if (result && result.transport > 75) {
     alerts.push({
       type: "info",
-      title: "High Transport Cost",
+      title: "High Transport Cost ₹Per/box",
       message: `Transport cost of ₹${result.transport}/box is above average. Total: ₹${result.totalTransportCost.toLocaleString('en-IN')}`,
+      icon: Info,
+    });
+  }
+
+  // Check for high transport costs
+  if (result && result.packing > 70) {
+    alerts.push({
+      type: "info",
+      title: "High Packing cost ₹Per/box",
+      message: `Packing cost of ₹${result.packing}/box is above average. Total: ₹${result.totalPackingCost.toLocaleString('en-IN')}`,
       icon: Info,
     });
   }
