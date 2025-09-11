@@ -19,6 +19,7 @@ import { SummaryCards } from "./SummaryCards";
 import { ContactInfo } from "./ContactInfo";
 import { AlertSystem } from "./AlertSystem";
 import { exportCalculationToPDF } from "@/utils/pdfExport";
+import { Footer } from "@/components/ui/footer";
 
 const defaultGrades: Omit<GradeData, 'id'>[] = [
   { note: '4 dana', boxes: 1, rate: 1890, gross: 1890 },
@@ -316,8 +317,8 @@ export const AnarCalculator = () => {
           </CardHeader>
         </Card>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <div className="xl:col-span-2 space-y-6">
+        <div className="space-y-6">
+          <div className="space-y-6">
             {/* Contact Information */}
             <ContactInfo
               farmerName={contactInfo.farmerName}
@@ -386,56 +387,55 @@ export const AnarCalculator = () => {
             />
           </div>
 
-          <div className="space-y-6">
-            {/* Summary Cards */}
-            <SummaryCards result={currentResult} />
+          {/* Summary Cards */}
+          <SummaryCards result={currentResult} />
 
-            {/* Instructions */}
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">How to Use</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm text-muted-foreground">
-                <div className="flex items-start gap-3">
-                  <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
-                  <p>Sign in to save your calculations and access history</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
-                  <p>Enter farmer and buyer details for tracking</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
-                  <p>Add grade-wise boxes and broker rates per box</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
-                  <p>Configure cost settings (commission, transport, etc.)</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">5</span>
-                  <p>Click Calculate and Save to track your profits</p>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Instructions */}
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">How to Use</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm text-muted-foreground">
+              <div className="flex items-start gap-3">
+                <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                <p>Sign in to save your calculations and access history</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                <p>Enter farmer and buyer details for tracking</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                <p>Add grade-wise boxes and broker rates per box</p>
+              </div>
+              <div className="flesh items-start gap-3">
+                <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
+                <p>Configure cost settings (commission, transport, etc.)</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-0.5">5</span>
+                <p>Click Calculate and Save to track your profits</p>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Chart Toggle */}
-            <Card className="shadow-card">
-              <CardContent className="pt-6">
-                <Button 
-                  onClick={() => setShowChart(!showChart)} 
-                  variant="outline" 
-                  className="w-full"
-                  disabled={calculations.length === 0}
-                >
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  {showChart ? 'Hide Profit Chart' : 'Show Profit Chart'}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Chart Toggle */}
+          <Card className="shadow-card">
+            <CardContent className="pt-6">
+              <Button 
+                onClick={() => setShowChart(!showChart)} 
+                variant="outline" 
+                className="w-full"
+                disabled={calculations.length === 0}
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                {showChart ? 'Hide Profit Chart' : 'Show Profit Chart'}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

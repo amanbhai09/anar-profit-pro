@@ -15,7 +15,9 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const { signIn, resetPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +32,65 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
       setLoading(false);
     }
   };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail) return;
+
+    try {
+      await resetPassword(resetEmail);
+      setShowForgotPassword(false);
+      setResetEmail('');
+    } catch (error) {
+      console.error('Reset password error:', error);
+    }
+  };
+
+  if (showForgotPassword) {
+    return (
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Reset Password</CardTitle>
+          <CardDescription className="text-center">
+            Enter your email to receive a password reset link
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleForgotPassword}>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="resetEmail">Email</Label>
+              <Input
+                id="resetEmail"
+                type="email"
+                placeholder="Enter your email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={loading || !resetEmail}
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Send Reset Link
+            </Button>
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => setShowForgotPassword(false)}
+              className="text-sm"
+            >
+              Back to Sign In
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -89,6 +150,14 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
             Sign In
           </Button>
           <div className="text-center space-y-2">
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => setShowForgotPassword(true)}
+              className="text-sm"
+            >
+              Forgot password?
+            </Button>
             <Button
               type="button"
               variant="link"
