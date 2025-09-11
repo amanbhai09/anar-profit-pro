@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { CalculationResult } from '@/types/calculator';
 
 export const exportCalculationToPDF = (calculation: CalculationResult) => {
@@ -73,7 +73,7 @@ export const exportCalculationToPDF = (calculation: CalculationResult) => {
     `${(grade.marginPercent || 0).toFixed(1)}%`
   ]);
   
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: yPos + 5,
     head: [['Grade', 'Boxes', 'Rate/Box', 'Gross', 'Profit/Box', 'Margin %']],
     body: gradeTableData,
@@ -84,7 +84,7 @@ export const exportCalculationToPDF = (calculation: CalculationResult) => {
   });
   
   // Summary Section
-  const finalY = (doc as any).lastAutoTable.finalY + 15;
+  const finalY = (doc as any).autoTable.previous.finalY + 15;
   
   doc.setFontSize(14);
   doc.setTextColor(40);
@@ -100,7 +100,7 @@ export const exportCalculationToPDF = (calculation: CalculationResult) => {
     ['Final Profit/Loss', `₹${calculation.profit.toLocaleString('en-IN')}`],
   ];
   
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: finalY + 5,
     body: summaryData,
     theme: 'plain',
@@ -112,7 +112,7 @@ export const exportCalculationToPDF = (calculation: CalculationResult) => {
   });
   
   // Cost Breakdown
-  const costBreakdownY = (doc as any).lastAutoTable.finalY + 10;
+  const costBreakdownY = (doc as any).autoTable.previous.finalY + 10;
   
   doc.setFontSize(12);
   doc.setTextColor(40);
@@ -125,7 +125,7 @@ export const exportCalculationToPDF = (calculation: CalculationResult) => {
     ['Miscellaneous', `₹${calculation.totalUtilityCost.toLocaleString('en-IN')}`],
   ];
   
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: costBreakdownY + 5,
     body: costData,
     theme: 'plain',
@@ -138,7 +138,7 @@ export const exportCalculationToPDF = (calculation: CalculationResult) => {
   
   // Notes
   if (calculation.notes) {
-    const notesY = (doc as any).lastAutoTable.finalY + 10;
+    const notesY = (doc as any).autoTable.previous.finalY + 10;
     doc.setFontSize(10);
     doc.setTextColor(40);
     doc.text('Notes:', 20, notesY);
