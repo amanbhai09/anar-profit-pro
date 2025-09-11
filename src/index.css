@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* User-Friendly Design System – Soft Light & Dark Themes */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    /* Light Theme – Soft whites and grays */
+    --background: 210 20% 97%; /* very soft off-white */
+    --foreground: 210 15% 20%; /* dark gray text */
+    
+    --card: 210 20% 98%;
+    --card-foreground: 210 15% 20%;
+    
+    --popover: 210 20% 96%;
+    --popover-foreground: 210 15% 20%;
+
+    --primary: 217 88% 55%;
+    --primary-foreground: 210 15% 20%;
+    --primary-glow: 217 88% 65%;
+
+    --secondary: 210 10% 85%;
+    --secondary-foreground: 210 15% 20%;
+
+    --muted: 210 10% 85%;
+    --muted-foreground: 210 10% 50%;
+
+    --accent: 210 10% 85%;
+    --accent-foreground: 210 15% 20%;
+
+    --success: 142 60% 45%;
+    --success-foreground: 210 15% 20%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 210 15% 20%;
+
+    --warning: 38 90% 55%;
+    --warning-foreground: 210 15% 20%;
+
+    --border: 210 15% 80%;
+    --input: 210 10% 90%;
+    --ring: 217 88% 55%;
+
+    --radius: 0.75rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(142 60% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(210 10% 85%));
+
+    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.3);
+    --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    /* Dark Theme – Soft blacks and grays */
+    --background: 210 10% 10%; /* dark gray-black */
+    --foreground: 210 10% 90%; /* light gray text */
+
+    --card: 210 10% 12%;
+    --card-foreground: 210 10% 90%;
+
+    --popover: 210 10% 15%;
+    --popover-foreground: 210 10% 90%;
+
+    --primary: 217 88% 45%;
+    --primary-foreground: 210 10% 90%;
+    --primary-glow: 217 88% 55%;
+
+    --secondary: 210 10% 20%;
+    --secondary-foreground: 210 10% 90%;
+
+    --muted: 210 10% 20%;
+    --muted-foreground: 210 10% 70%;
+
+    --accent: 210 10% 20%;
+    --accent-foreground: 210 10% 90%;
+
+    --success: 142 60% 40%;
+    --success-foreground: 210 10% 90%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 210 10% 90%;
+
+    --warning: 38 90% 45%;
+    --warning-foreground: 210 10% 90%;
+
+    --border: 210 10% 25%;
+    --input: 210 10% 20%;
+    --ring: 217 88% 45%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(142 60% 35%));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(210 10% 20%));
+
+    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.3);
+    --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter transition-all duration-300;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .btn-hero {
+    @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground hover:shadow-glow transition-all duration-300 hover:scale-105;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-success via-success to-emerald-500 text-success-foreground hover:shadow-lg transition-all duration-300;
+  }
+
+  .btn-ghost-elegant {
+    @apply bg-transparent border border-border/50 text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all duration-300;
+  }
+
+  .card-elegant {
+    @apply bg-gradient-to-br from-card via-card to-secondary/20 border border-border/50 shadow-card backdrop-blur-sm;
+  }
+
+  .card-profit {
+    @apply bg-gradient-to-r from-success/10 via-success/5 to-emerald-500/10 border border-success/20;
+  }
+
+  .card-loss {
+    @apply bg-gradient-to-r from-destructive/10 via-destructive/5 to-red-500/10 border border-destructive/20;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+}
+
+@layer utilities {
+  .font-inter {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent;
+  }
+
+  .text-gradient-success {
+    @apply bg-gradient-to-r from-success to-emerald-400 bg-clip-text text-transparent;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
