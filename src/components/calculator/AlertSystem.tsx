@@ -56,7 +56,7 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
   if (result && result.transport > 75) {
     alerts.push({
       type: "info",
-      title: "High Transport Cost ₹Per/box",
+      title: "High Transport Cost",
       message: `Transport cost of ₹${result.transport}/box is above average. Total: ₹${result.totalTransportCost.toLocaleString('en-IN')}`,
       icon: Info,
     });
@@ -66,7 +66,7 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
   if (result && result.packing > 70) {
     alerts.push({
       type: "info",
-      title: "High Packing cost ₹Per/box",
+      title: "High Packing cost",
       message: `Packing cost of ₹${result.packing}/box is above average. Total: ₹${result.totalPackingCost.toLocaleString('en-IN')}`,
       icon: Info,
     });
