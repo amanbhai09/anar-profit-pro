@@ -33,7 +33,7 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
   }
 
   // Check for high commission
-  if (result && result.commission > 10) {
+  if (result && result.commission > 6) {
     alerts.push({
       type: "warning",
       title: "High Commission",
@@ -42,6 +42,17 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
     });
   }
 
+  
+  // Check for high packing cost
+  if (result && result.packing > 60) {
+    alerts.push({
+      type: "warning",
+      title: "High Packing Cost",
+      message: `Packing Cost rate of ${result.packing}/box is above average.Consider optimize cost of packing.`,
+      icon: AlertTriangle,
+    });
+  }
+  
   // Check for profit
   if (result && result.profit > 0) {
     alerts.push({
@@ -53,7 +64,7 @@ export const AlertSystem = ({ result, grades }: AlertSystemProps) => {
   }
 
   // Check for high transport costs
-  if (result && result.transport > 100) {
+  if (result && result.transport > 75) {
     alerts.push({
       type: "info",
       title: "High Transport Cost",
