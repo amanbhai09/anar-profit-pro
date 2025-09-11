@@ -12,7 +12,7 @@ export const Footer = () => {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => window.open('http://cienma4u.xo.je/profit2', '_blank')}
+              onClick={() => window.open('https://cienma4u.xo.je/profit2', '_blank')}
             >
               <Calculator className="w-4 h-4 mr-2" />
               Avg Calculator
@@ -30,13 +30,40 @@ export const Footer = () => {
             <Button 
               variant="ghost" 
               size="sm"
+              onClick={() => window.open('https://www.youtube.com/shorts/4Dl03usMTB0', '_blank')}
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Guide
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              size="sm"
               onClick={() => window.open('#', '_blank')}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               Analytics
             </Button>
 
-            
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => window.open('#', '_blank')}
+            >
+              <Shield className="w-4 h-4 mr-2" />
+              Security
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => window.open('#', '_blank')}
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Reports
+            </Button>
+          </div>
+
           {/* Made by section */}
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <span>Made with</span>
