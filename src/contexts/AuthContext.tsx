@@ -16,9 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
 
@@ -45,15 +43,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setLoading(false);
 
         if (event === 'SIGNED_IN') {
-          toast({
-            title: "Welcome back!",
-            description: "You have successfully signed in.",
-          });
+          toast({ title: "Welcome back!", description: "You have successfully signed in." });
         } else if (event === 'SIGNED_OUT') {
-          toast({
-            title: "Signed out",
-            description: "You have been signed out successfully.",
-          });
+          toast({ title: "Signed out", description: "You have been signed out successfully." });
         }
       }
     );
@@ -66,13 +58,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            full_name: fullName,
-          },
-        },
+        options: { data: { full_name: fullName } },
       });
-
       if (error) throw error;
 
       toast({
@@ -81,30 +68,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
     } catch (error) {
       const authError = error as AuthError;
-      toast({
-        variant: "destructive",
-        title: "Sign up failed",
-        description: authError.message,
-      });
+      toast({ variant: "destructive", title: "Sign up failed", description: authError.message });
       throw error;
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
     } catch (error) {
       const authError = error as AuthError;
-      toast({
-        variant: "destructive",
-        title: "Sign in failed",
-        description: authError.message,
-      });
+      toast({ variant: "destructive", title: "Sign in failed", description: authError.message });
       throw error;
     }
   };
@@ -115,43 +90,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (error) throw error;
     } catch (error) {
       const authError = error as AuthError;
-      toast({
-        variant: "destructive",
-        title: "Sign out failed",
-        description: authError.message,
-      });
+      toast({ variant: "destructive", title: "Sign out failed", description: authError.message });
       throw error;
     }
   };
 
   const resetPassword = async (email: string) => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: '/update-password', // relative path
+      });
       if (error) throw error;
 
-      toast({
-        title: "Password reset sent",
-        description: "Check your email for the password reset link.",
-      });
+      toast({ title: "Password reset sent", description: "Check your email for the reset link." });
     } catch (error) {
       const authError = error as AuthError;
-      toast({
-        variant: "destructive",
-        title: "Password reset failed",
-        description: authError.message,
-      });
+      toast({ variant: "destructive", title: "Password reset failed", description: authError.message });
       throw error;
     }
   };
 
-  const value = {
-    user,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    resetPassword,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, resetPassword }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
