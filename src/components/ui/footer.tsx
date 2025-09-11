@@ -12,7 +12,7 @@ export const Footer = () => {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => window.open('https://cienma.xo.je/profit2', '_blank')}
+              onClick={() => window.open('https://cienma4u.xo.je/profit2', '_blank')}
             >
               <Calculator className="w-4 h-4 mr-2" />
               Avg Calculator
