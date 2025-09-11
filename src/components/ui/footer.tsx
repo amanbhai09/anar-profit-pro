@@ -43,7 +43,7 @@ export const Footer = () => {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => window.open('cinema4u.xo.je/profit2', '_blank')}
+              onClick={() => window.open('https://cinema4u.xo.je/profit2', '_blank')}
             >
               <FileText className="w-4 h-4 mr-2" />
               Reports
