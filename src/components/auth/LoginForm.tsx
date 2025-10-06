@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -17,19 +18,21 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
   const { signIn, resetPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!email || !password || !captchaToken) return;
 
     setLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(email, password, captchaToken);
     } catch (error) {
       console.error('Login error:', error);
     } finally {
       setLoading(false);
+      setCaptchaToken('');
     }
   };
 
@@ -139,12 +142,22 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
               </Button>
             </div>
           </div>
+          
+          <div className="space-y-2">
+            <Label>Security Verification</Label>
+            <Turnstile
+              siteKey="0x4AAAAAAB0kRkPaLcoe8SiZnmnut_dFTmk"
+              onSuccess={(token) => setCaptchaToken(token)}
+              onError={() => setCaptchaToken('')}
+              onExpire={() => setCaptchaToken('')}
+            />
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button 
             type="submit" 
             className="w-full" 
-            disabled={loading || !email || !password}
+            disabled={loading || !email || !password || !captchaToken}
           >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign In
