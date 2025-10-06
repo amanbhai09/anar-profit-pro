@@ -6,13 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, BarChart3, Package, FileText, ShieldCheck, MessageCircle } from "lucide-react";
+import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, Package, FileText, ShieldCheck, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/navigation/Header";
 import { useCalculations } from "@/hooks/useCalculations";
-import { HistoryTable } from "./HistoryTable";
 import { GradeData, CalculationResult, CostSettings } from "@/types/calculator";
-import { ProfitChart } from "./ProfitChart";
 import { GradeRow } from "./GradeRow";
 import { CostSettings as CostSettingsComponent } from "./CostSettings";
 import { SummaryCards } from "./SummaryCards";
@@ -42,12 +40,11 @@ const defaultCostSettings: CostSettings = {
 
 export const AnarCalculator = () => {
   const { toast } = useToast();
-  const { calculations, saveCalculation, deleteCalculation, loading: historyLoading } = useCalculations();
+  const { saveCalculation, loading: historyLoading } = useCalculations();
   
   const [grades, setGrades] = useState<GradeData[]>([]);
   const [costSettings, setCostSettings] = useState<CostSettings>(defaultCostSettings);
   const [currentResult, setCurrentResult] = useState<CalculationResult | undefined>();
-  const [showChart, setShowChart] = useState(false);
   const [showSafeBuyDialog, setShowSafeBuyDialog] = useState(false);
   
   // Contact and transaction info
@@ -386,33 +383,6 @@ export const AnarCalculator = () => {
               </CardContent>
             </Card>
 
-            {/* Profit Chart */}
-            {showChart && calculations.length > 0 && (
-              <ProfitChart data={calculations.slice(0, 10)} />
-            )}
-
-            {/* History Table - Moved to bottom */}
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-primary" />
-                  Calculation History
-                  {calculations.length > 0 && (
-                    <Badge variant="secondary">{calculations.length} records</Badge>
-                  )}
-                </CardTitle>
-                <CardDescription>
-                  View and manage your saved calculations
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <HistoryTable 
-                  calculations={calculations}
-                  onDelete={deleteCalculation}
-                  loading={historyLoading}
-                />
-              </CardContent>
-            </Card>
           </div>
 
           {/* Summary Cards */}
@@ -447,20 +417,6 @@ export const AnarCalculator = () => {
             </CardContent>
           </Card>
 
-          {/* Chart Toggle */}
-          <Card className="shadow-card">
-            <CardContent className="pt-6">
-              <Button 
-                onClick={() => setShowChart(!showChart)} 
-                variant="outline" 
-                className="w-full"
-                disabled={calculations.length === 0}
-              >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                {showChart ? 'Hide Profit Chart' : 'Show Profit Chart'}
-              </Button>
-            </CardContent>
-          </Card>
 
           {/* Contact Buttons */}
           <Card className="shadow-card">

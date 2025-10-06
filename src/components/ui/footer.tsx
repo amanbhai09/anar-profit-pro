@@ -1,5 +1,6 @@
 import { Heart, Calculator, MessageCircle, TrendingUp, Shield, FileText, BookOpen } from "lucide-react";
 import { Button } from "./button";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -12,10 +13,23 @@ export const Footer = () => {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => window.open('https://cienma4u.xo.je/profit2', '_blank')}
+              asChild
             >
-              <Calculator className="w-4 h-4 mr-2" />
-              Avg Calculator
+              <Link to="/average-calculator">
+                <Calculator className="w-4 h-4 mr-2" />
+                Avg Calculator
+              </Link>
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              size="sm"
+              asChild
+            >
+              <Link to="/history">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                History
+              </Link>
             </Button>
 
             <Button 
@@ -24,7 +38,7 @@ export const Footer = () => {
               onClick={() => window.open('https://t.me/aman25gt', '_blank')}
             >
               <MessageCircle className="w-4 h-4 mr-2" />
-              Support
+              Contact
             </Button>
 
             <Button 
@@ -33,34 +47,7 @@ export const Footer = () => {
               onClick={() => window.open('https://www.youtube.com/shorts/4Dl03usMTB0', '_blank')}
             >
               <BookOpen className="w-4 h-4 mr-2" />
-              Guide
-            </Button>
-
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => window.open('#', '_blank')}
-            >
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Analytics
-            </Button>
-
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => window.open('#', '_blank')}
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              Security
-            </Button>
-
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => window.open('#', '_blank')}
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              Reports
+              How to Use
             </Button>
           </div>
 

@@ -14,11 +14,22 @@ interface PriceEntry {
   weight: number;
 }
 
+interface ConversionState {
+  kg: number;
+  percent: number;
+  totalKg: number;
+}
+
 export const AverageCalculator = () => {
   const [entries, setEntries] = useState<PriceEntry[]>([
     { id: '1', price: 0, weight: 0 }
   ]);
   const [averagePrice, setAveragePrice] = useState<number>(0);
+  const [conversion, setConversion] = useState<ConversionState>({
+    kg: 0,
+    percent: 0,
+    totalKg: 100
+  });
   const { toast } = useToast();
 
   const addEntry = () => {
@@ -64,6 +75,21 @@ export const AverageCalculator = () => {
       title: "Success",
       description: `Weighted average price calculated: ₹${average.toFixed(2)}`,
     });
+  };
+
+  const handleKgChange = (kg: number) => {
+    const percent = conversion.totalKg > 0 ? (kg / conversion.totalKg) * 100 : 0;
+    setConversion({ ...conversion, kg, percent });
+  };
+
+  const handlePercentChange = (percent: number) => {
+    const kg = (percent / 100) * conversion.totalKg;
+    setConversion({ ...conversion, kg, percent });
+  };
+
+  const handleTotalKgChange = (totalKg: number) => {
+    const percent = totalKg > 0 ? (conversion.kg / totalKg) * 100 : 0;
+    setConversion({ ...conversion, totalKg, percent });
   };
 
   return (
@@ -167,6 +193,65 @@ export const AverageCalculator = () => {
             </CardContent>
           </Card>
         )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Kg ⇄ Percent Converter</CardTitle>
+            <CardDescription>
+              Convert between kilograms and percentage
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="total-kg">Total Kg (Base)</Label>
+                <Input
+                  id="total-kg"
+                  type="number"
+                  placeholder="100"
+                  value={conversion.totalKg || ''}
+                  onChange={(e) => handleTotalKgChange(parseFloat(e.target.value) || 0)}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="kg-input">Kilograms (Kg)</Label>
+                <Input
+                  id="kg-input"
+                  type="number"
+                  placeholder="0"
+                  value={conversion.kg || ''}
+                  onChange={(e) => handleKgChange(parseFloat(e.target.value) || 0)}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="percent-input">Percentage (%)</Label>
+                <Input
+                  id="percent-input"
+                  type="number"
+                  placeholder="0"
+                  value={conversion.percent || ''}
+                  onChange={(e) => handlePercentChange(parseFloat(e.target.value) || 0)}
+                />
+              </div>
+            </div>
+
+            <div className="p-4 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                {conversion.kg > 0 ? (
+                  <>
+                    <span className="font-semibold text-foreground">{conversion.kg.toFixed(2)} kg</span> is{' '}
+                    <span className="font-semibold text-foreground">{conversion.percent.toFixed(2)}%</span> of{' '}
+                    <span className="font-semibold text-foreground">{conversion.totalKg} kg</span>
+                  </>
+                ) : (
+                  "Enter values to see conversion"
+                )}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

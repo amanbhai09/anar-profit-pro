@@ -76,9 +76,11 @@ export const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <History className="mr-2 h-4 w-4" />
-                    History
+                  <DropdownMenuItem asChild>
+                    <Link to="/history" className="cursor-pointer">
+                      <History className="mr-2 h-4 w-4" />
+                      History
+                    </Link>
                   </DropdownMenuItem>
                   {isAdmin() && (
                     <DropdownMenuItem asChild>

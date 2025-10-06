@@ -1,8 +1,8 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { CalculationResult } from '@/types/calculator';
 
-export const exportCalculationToPDF = (calculation) => {
+export const exportCalculationToPDF = (calculation: CalculationResult) => {
   const doc = new jsPDF();
   let yPos = 20;
 
@@ -75,7 +75,7 @@ export const exportCalculationToPDF = (calculation) => {
     `${(grade.marginPercent || 0).toFixed(1)}%`
   ]);
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: yPos,
     head: [['Grade', 'Boxes', 'Rate/Box', 'Gross', 'Profit/Box', 'Margin %']],
     body: gradeTableData,
@@ -83,12 +83,9 @@ export const exportCalculationToPDF = (calculation) => {
     styles: { fontSize: 9, cellPadding: 3 },
     headStyles: { fillColor: [40, 116, 240], textColor: 255 },
     alternateRowStyles: { fillColor: [245, 247, 250] },
-    didDrawPage: (data) => {
-        yPos = data.cursor.y + 15;
-    }
   });
 
-  yPos = doc.lastAutoTable.finalY + 15;
+  yPos = (doc as any).lastAutoTable.finalY + 15;
 
   // Summary Section
   doc.setFontSize(14);
@@ -106,7 +103,7 @@ export const exportCalculationToPDF = (calculation) => {
     ['Final Profit/Loss', `₹${calculation.profit.toLocaleString('en-IN')}`],
   ];
   
-  doc.autoTable({
+  autoTable(doc, {
     startY: yPos,
     body: summaryData,
     theme: 'plain',
@@ -116,7 +113,7 @@ export const exportCalculationToPDF = (calculation) => {
       1: { halign: 'right', cellWidth: 60 }
     },
   });
-  yPos = doc.lastAutoTable.finalY + 10;
+  yPos = (doc as any).lastAutoTable.finalY + 10;
 
   // Cost Breakdown
   doc.setFontSize(12);
@@ -131,7 +128,7 @@ export const exportCalculationToPDF = (calculation) => {
     ['Miscellaneous', `₹${calculation.totalUtilityCost.toLocaleString('en-IN')}`],
   ];
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: yPos,
     body: costData,
     theme: 'plain',
@@ -141,7 +138,7 @@ export const exportCalculationToPDF = (calculation) => {
       1: { halign: 'right', cellWidth: 60 }
     },
   });
-  yPos = doc.lastAutoTable.finalY + 10;
+  yPos = (doc as any).lastAutoTable.finalY + 10;
 
   // Notes
   if (calculation.notes) {
