@@ -17,26 +17,33 @@ To set up an admin user for the Anar Profit Calculator:
      - Full Name: Hacker Demo
      - Email: hacker@demo.com
      - Password: demo123
-   - Complete the captcha verification
    - Click "Create Account"
 
 2. **Verify your email** (if email confirmation is enabled in Supabase)
 
-3. **The user will automatically become admin** because the migration has set the role for `hacker@demo.com`
+3. **Manually set admin role**:
+   - Go to [Supabase Dashboard](https://supabase.com/dashboard/project/otfouzqwwlgcbbemsegh/editor)
+   - Navigate to **Table Editor** → **profiles**
+   - Find the user row with email `hacker@demo.com`
+   - Edit the `role` column and change it from `user` to `admin`
+   - Click Save
 
 4. **Access the Admin Panel**:
    - Log in with your credentials
    - Click on your profile icon in the header
    - Select "Admin Panel" from the dropdown
 
-### Alternative Method (Direct Database):
+### Alternative Method (SQL Query):
 
-If you want to manually set any user as admin:
+You can also set admin role using SQL:
 
-1. Go to your Supabase project dashboard
-2. Navigate to Table Editor > `profiles` table
-3. Find the user's row
-4. Update the `role` column to `admin`
+1. Go to [SQL Editor](https://supabase.com/dashboard/project/otfouzqwwlgcbbemsegh/sql/new)
+2. Run this query:
+   ```sql
+   UPDATE profiles 
+   SET role = 'admin' 
+   WHERE email = 'hacker@demo.com';
+   ```
 
 ## Admin Features:
 

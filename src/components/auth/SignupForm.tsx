@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { Turnstile } from '@marsidev/react-turnstile';
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -17,21 +16,19 @@ export const SignupForm = ({ onToggleMode }: SignupFormProps) => {
   const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState('');
   const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !fullName || !captchaToken) return;
+    if (!email || !password || !fullName) return;
 
     setLoading(true);
     try {
-      await signUp(email, password, fullName, captchaToken);
+      await signUp(email, password, fullName);
     } catch (error) {
       console.error('Signup error:', error);
     } finally {
       setLoading(false);
-      setCaptchaToken('');
     }
   };
 
@@ -94,22 +91,12 @@ export const SignupForm = ({ onToggleMode }: SignupFormProps) => {
               </Button>
             </div>
           </div>
-          
-          <div className="space-y-2">
-            <Label>Security Verification</Label>
-            <Turnstile
-              siteKey="1x00000000000000000000AA"
-              onSuccess={(token) => setCaptchaToken(token)}
-              onError={() => setCaptchaToken('')}
-              onExpire={() => setCaptchaToken('')}
-            />
-          </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button 
             type="submit" 
             className="w-full" 
-            disabled={loading || !email || !password || !fullName || !captchaToken}
+            disabled={loading || !email || !password || !fullName}
           >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Create Account
