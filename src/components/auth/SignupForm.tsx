@@ -98,7 +98,7 @@ export const SignupForm = ({ onToggleMode }: SignupFormProps) => {
           <div className="space-y-2">
             <Label>Security Verification</Label>
             <Turnstile
-              siteKey="0x4AAAAAAB0kRkPaLcoe8SiZnmnut_dFTmk"
+              siteKey="1x00000000000000000000AA"
               onSuccess={(token) => setCaptchaToken(token)}
               onError={() => setCaptchaToken('')}
               onExpire={() => setCaptchaToken('')}

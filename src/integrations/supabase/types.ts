@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      average_calculations: {
+        Row: {
+          average_price: number
+          created_at: string
+          entries: Json
+          id: string
+          total_value: number
+          total_weight: number
+          user_id: string
+        }
+        Insert: {
+          average_price: number
+          created_at?: string
+          entries: Json
+          id?: string
+          total_value: number
+          total_weight: number
+          user_id: string
+        }
+        Update: {
+          average_price?: number
+          created_at?: string
+          entries?: Json
+          id?: string
+          total_value?: number
+          total_weight?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       calculations: {
         Row: {
           buyer_contact: string | null

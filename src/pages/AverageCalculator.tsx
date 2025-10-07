@@ -3,10 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calculator, Plus, Trash2 } from "lucide-react";
+import { Calculator, Plus, Trash2, Download, Save, History } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/ui/footer";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAverageCalculations } from "@/hooks/useAverageCalculations";
+import { exportAverageToPDF } from "@/utils/averagePdfExport";
 
 interface PriceEntry {
   id: string;
@@ -25,12 +28,17 @@ export const AverageCalculator = () => {
     { id: '1', price: 0, weight: 0 }
   ]);
   const [averagePrice, setAveragePrice] = useState<number>(0);
+  const [totalWeight, setTotalWeight] = useState<number>(0);
+  const [totalValue, setTotalValue] = useState<number>(0);
   const [conversion, setConversion] = useState<ConversionState>({
     kg: 0,
     percent: 0,
     totalKg: 100
   });
+  const [showHistory, setShowHistory] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { calculations, loading, saveCalculation, deleteCalculation } = useAverageCalculations();
 
   const addEntry = () => {
     const newEntry: PriceEntry = {
@@ -65,15 +73,62 @@ export const AverageCalculator = () => {
       return;
     }
 
-    const totalValue = validEntries.reduce((sum, entry) => sum + (entry.price * entry.weight), 0);
-    const totalWeight = validEntries.reduce((sum, entry) => sum + entry.weight, 0);
+    const calcTotalValue = validEntries.reduce((sum, entry) => sum + (entry.price * entry.weight), 0);
+    const calcTotalWeight = validEntries.reduce((sum, entry) => sum + entry.weight, 0);
     
-    const average = totalValue / totalWeight;
+    const average = calcTotalValue / calcTotalWeight;
     setAveragePrice(average);
+    setTotalWeight(calcTotalWeight);
+    setTotalValue(calcTotalValue);
 
     toast({
       title: "Success",
       description: `Weighted average price calculated: ₹${average.toFixed(2)}`,
+    });
+  };
+
+  const handleSave = async () => {
+    if (averagePrice === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate average first",
+      });
+      return;
+    }
+
+    const validEntries = entries
+      .filter(entry => entry.price > 0 && entry.weight > 0)
+      .map(({ price, weight }) => ({ price, weight }));
+
+    await saveCalculation(validEntries, averagePrice, totalWeight, totalValue);
+  };
+
+  const handleExportPDF = () => {
+    if (averagePrice === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate average first",
+      });
+      return;
+    }
+
+    const validEntries = entries
+      .filter(entry => entry.price > 0 && entry.weight > 0)
+      .map(({ price, weight }) => ({ price, weight }));
+
+    exportAverageToPDF({
+      entries: validEntries,
+      averagePrice,
+      totalWeight,
+      totalValue,
+      createdAt: new Date().toISOString(),
+    });
+
+    toast({
+      title: "Success",
+      description: "PDF exported successfully",
     });
   };
 
@@ -110,14 +165,32 @@ export const AverageCalculator = () => {
                 </CardDescription>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button onClick={addEntry} size="sm">
+                <Button onClick={addEntry} size="sm" variant="outline">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Entry
                 </Button>
                 <Button onClick={calculateAverage} size="sm" className="btn-hero">
                   <Calculator className="w-4 h-4 mr-2" />
-                  Calculate Average
+                  Calculate
                 </Button>
+                {user && averagePrice > 0 && (
+                  <>
+                    <Button onClick={handleSave} size="sm" variant="outline">
+                      <Save className="w-4 h-4 mr-2" />
+                      Save
+                    </Button>
+                    <Button onClick={handleExportPDF} size="sm" variant="outline">
+                      <Download className="w-4 h-4 mr-2" />
+                      PDF
+                    </Button>
+                  </>
+                )}
+                {user && (
+                  <Button onClick={() => setShowHistory(!showHistory)} size="sm" variant="outline">
+                    <History className="w-4 h-4 mr-2" />
+                    {showHistory ? 'Hide' : 'Show'} History
+                  </Button>
+                )}
               </div>
             </div>
           </CardHeader>
@@ -183,13 +256,97 @@ export const AverageCalculator = () => {
                 Weighted Average Result
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-2">
               <div className="text-3xl font-bold text-green-600 dark:text-green-400">
                 ₹{averagePrice.toFixed(2)} per kg
               </div>
-              <p className="text-sm text-green-600 dark:text-green-400 mt-2">
-                Based on {entries.filter(e => e.price > 0 && e.weight > 0).length} valid entries
-              </p>
+              <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Entries</p>
+                  <p className="font-semibold">{entries.filter(e => e.price > 0 && e.weight > 0).length}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Total Weight</p>
+                  <p className="font-semibold">{totalWeight.toFixed(2)} kg</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Total Value</p>
+                  <p className="font-semibold">₹{totalValue.toLocaleString('en-IN')}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {showHistory && user && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Calculation History</CardTitle>
+              <CardDescription>
+                Your saved average calculations
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <p className="text-muted-foreground text-center py-4">Loading...</p>
+              ) : calculations.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No saved calculations yet</p>
+              ) : (
+                <div className="space-y-4">
+                  {calculations.map((calc) => (
+                    <div key={calc.id} className="p-4 border rounded-lg space-y-2">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(calc.created_at).toLocaleString('en-IN')}
+                          </p>
+                          <p className="text-2xl font-bold text-primary mt-1">
+                            ₹{Number(calc.average_price).toFixed(2)}/kg
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              exportAverageToPDF({
+                                entries: calc.entries,
+                                averagePrice: Number(calc.average_price),
+                                totalWeight: Number(calc.total_weight),
+                                totalValue: Number(calc.total_value),
+                                createdAt: calc.created_at,
+                              });
+                            }}
+                          >
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => deleteCalculation(calc.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">Entries</p>
+                          <p className="font-semibold">{calc.entries.length}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Total Weight</p>
+                          <p className="font-semibold">{Number(calc.total_weight).toFixed(2)} kg</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Total Value</p>
+                          <p className="font-semibold">₹{Number(calc.total_value).toLocaleString('en-IN')}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
