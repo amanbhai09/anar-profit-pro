@@ -97,6 +97,10 @@ export const AverageCalculator = () => {
       return;
     }
 
+    function clearDisplay() {
+    document.getElementById('display').value = '';
+}
+
     const validEntries = entries
       .filter(entry => entry.price > 0 && entry.weight > 0)
       .map(({ price, weight }) => ({ price, weight }));
@@ -183,6 +187,9 @@ export const AverageCalculator = () => {
                       <Download className="w-4 h-4 mr-2" />
                       PDF
                     </Button>
+
+                  <button onclick="clearDisplay()">Clear</button>
+                
                   </>
                 )}
                 {user && (
