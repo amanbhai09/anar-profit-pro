@@ -24,6 +24,7 @@ interface ConversionState {
 }
 
 export const AverageCalculator = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [entries, setEntries] = useState<PriceEntry[]>([
     { id: '1', price: 0, weight: 0 }
   ]);
@@ -147,6 +148,98 @@ export const AverageCalculator = () => {
     setConversion({ ...conversion, totalKg, percent });
   };
 
+  const clearForm = () => {
+    setEntries([{ id: '1', price: 0, weight: 0 }]);
+    setAveragePrice(0);
+    setTotalWeight(0);
+    setTotalValue(0);
+    toast({
+      title: "Form Cleared",
+      description: "All entries have been reset",
+    });
+  };
+
+  const triggerImport = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      const lines = text.split('\n').filter(line => line.trim());
+      
+      // Skip header row, expect columns: price,weight
+      const newEntries: PriceEntry[] = [];
+      
+      lines.slice(1).forEach((line, index) => {
+        const [priceStr, weightStr] = line.split(',');
+        const price = parseFloat(priceStr?.trim() || '0');
+        const weight = parseFloat(weightStr?.trim() || '0');
+        
+        if (price > 0 && weight > 0) {
+          newEntries.push({
+            id: (Date.now() + index).toString(),
+            price,
+            weight
+          });
+        }
+      });
+
+      if (newEntries.length > 0) {
+        setEntries(newEntries);
+        toast({
+          title: "CSV Imported Successfully",
+          description: `Imported ${newEntries.length} entries`,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Import Failed",
+          description: "No valid entries found. Expected format: price,weight",
+        });
+      }
+    };
+    
+    reader.readAsText(file);
+  };
+
+  const copySummary = () => {
+    if (averagePrice === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate average first",
+      });
+      return;
+    }
+
+    const summary = `Average Price Calculator Summary
+==============================
+Weighted Average Price: ₹${averagePrice.toFixed(2)} per kg
+Total Weight: ${totalWeight.toFixed(2)} kg
+Total Value: ₹${totalValue.toLocaleString('en-IN')}
+Number of Entries: ${entries.filter(e => e.price > 0 && e.weight > 0).length}
+
+Generated on: ${new Date().toLocaleDateString('en-IN')}`;
+
+    navigator.clipboard.writeText(summary).then(() => {
+      toast({
+        title: "Summary Copied",
+        description: "Summary copied to clipboard",
+      });
+    }).catch(() => {
+      toast({
+        variant: "destructive",
+        title: "Copy Failed",
+        description: "Failed to copy summary to clipboard",
+      });
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
       <Header />
@@ -173,6 +266,25 @@ export const AverageCalculator = () => {
                   <Calculator className="w-4 h-4 mr-2" />
                   Calculate
                 </Button>
+                <Button onClick={clearForm} size="sm" variant="outline">
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Clear
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".csv"
+                  className="hidden"
+                  onChange={handleImportCSV}
+                />
+                <Button onClick={triggerImport} size="sm" variant="outline">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Import CSV
+                </Button>
+                <Button onClick={copySummary} size="sm" variant="outline">
+                  <Clipboard className="w-4 h-4 mr-2" />
+                  Copy Summary
+                </Button>
                 {user && averagePrice > 0 && (
                   <>
                     <Button onClick={handleSave} size="sm" variant="outline">
@@ -183,7 +295,7 @@ export const AverageCalculator = () => {
                       <Download className="w-4 h-4 mr-2" />
                       PDF
                     </Button>
-
+                  </>
                 )}
                 {user && (
                   <Button onClick={() => setShowHistory(!showHistory)} size="sm" variant="outline">

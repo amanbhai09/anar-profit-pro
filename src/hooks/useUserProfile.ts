@@ -50,8 +50,27 @@ export const useUserProfile = () => {
     }
   };
 
-  const isAdmin = () => {
-    return profile?.role === 'admin';
+  const isAdmin = async () => {
+    if (!user) return false;
+    
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error checking admin role:', error);
+        return false;
+      }
+      
+      return !!data;
+    } catch (error) {
+      console.error('Error checking admin role:', error);
+      return false;
+    }
   };
 
   return {
