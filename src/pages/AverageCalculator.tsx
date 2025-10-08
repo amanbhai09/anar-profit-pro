@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calculator, Plus, Trash2, Download, Save, History } from "lucide-react";
+import { Calculator, Plus, Trash2, Download, Save, History, Upload, Clipboard } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/ui/footer";
 import { useToast } from "@/hooks/use-toast";
@@ -97,10 +97,6 @@ export const AverageCalculator = () => {
       return;
     }
 
-    function clearDisplay() {
-    document.getElementById('display').value = '';
-}
-
     const validEntries = entries
       .filter(entry => entry.price > 0 && entry.weight > 0)
       .map(({ price, weight }) => ({ price, weight }));
@@ -188,9 +184,6 @@ export const AverageCalculator = () => {
                       PDF
                     </Button>
 
-                  <button onclick="clearDisplay()">Clear</button>
-                
-                  </>
                 )}
                 {user && (
                   <Button onClick={() => setShowHistory(!showHistory)} size="sm" variant="outline">
