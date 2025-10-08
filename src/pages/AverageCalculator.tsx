@@ -3,13 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calculator, Plus, Trash2, Download, Save, History, Upload, Clipboard } from "lucide-react";
+import { Calculator, Plus, Trash2, Download, Save, History, Upload, Clipboard, Mic, MicOff, Sparkles, MessageSquare, TrendingUp, Share2 } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/ui/footer";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAverageCalculations } from "@/hooks/useAverageCalculations";
 import { exportAverageToPDF } from "@/utils/averagePdfExport";
+import { supabase } from "@/integrations/supabase/client";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 interface PriceEntry {
   id: string;
@@ -37,6 +39,10 @@ export const AverageCalculator = () => {
     totalKg: 100
   });
   const [showHistory, setShowHistory] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<string>("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showAnalysis, setShowAnalysis] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { calculations, loading, saveCalculation, deleteCalculation } = useAverageCalculations();
@@ -240,6 +246,197 @@ Generated on: ${new Date().toLocaleDateString('en-IN')}`;
     });
   };
 
+  const startVoiceInput = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast({
+        variant: "destructive",
+        title: "Not Supported",
+        description: "Voice input is not supported in your browser",
+      });
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'en-IN';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      toast({
+        title: "Listening...",
+        description: "Say: 'Price 100 weight 50' or just numbers",
+      });
+    };
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript.toLowerCase();
+      console.log('Voice input:', transcript);
+      
+      // Extract numbers from speech
+      const numbers = transcript.match(/\d+\.?\d*/g);
+      
+      if (numbers && numbers.length >= 2) {
+        const price = parseFloat(numbers[0]);
+        const weight = parseFloat(numbers[1]);
+        
+        const newEntry: PriceEntry = {
+          id: Date.now().toString(),
+          price,
+          weight
+        };
+        
+        setEntries([...entries, newEntry]);
+        
+        toast({
+          title: "Entry Added",
+          description: `Price: ₹${price}, Weight: ${weight}kg`,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Could not parse",
+          description: "Please say price and weight clearly",
+        });
+      }
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Voice input failed. Please try again.",
+      });
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
+
+  const getAIAnalysis = async () => {
+    if (averagePrice === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate average first",
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setShowAnalysis(true);
+
+    try {
+      const validEntries = entries
+        .filter(entry => entry.price > 0 && entry.weight > 0)
+        .map(({ price, weight }) => ({ price, weight }));
+
+      const { data, error } = await supabase.functions.invoke('analyze-prices', {
+        body: {
+          entries: validEntries,
+          averagePrice,
+          totalWeight,
+          totalValue
+        }
+      });
+
+      if (error) {
+        if (error.message?.includes('Rate limit')) {
+          toast({
+            variant: "destructive",
+            title: "Rate Limited",
+            description: "Too many requests. Please wait a moment.",
+          });
+        } else if (error.message?.includes('credits')) {
+          toast({
+            variant: "destructive",
+            title: "Credits Exhausted",
+            description: "Please add AI credits to your workspace.",
+          });
+        } else {
+          throw error;
+        }
+        setShowAnalysis(false);
+        return;
+      }
+
+      setAiAnalysis(data.analysis);
+      toast({
+        title: "Analysis Complete",
+        description: "AI insights generated successfully",
+      });
+    } catch (error) {
+      console.error('Error getting AI analysis:', error);
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "Could not generate AI insights",
+      });
+      setShowAnalysis(false);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const shareToWhatsApp = () => {
+    if (averagePrice === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate average first",
+      });
+      return;
+    }
+
+    const message = `📊 *Average Price Calculator*%0A%0A` +
+      `💰 *Weighted Average:* ₹${averagePrice.toFixed(2)}/kg%0A` +
+      `⚖️ *Total Weight:* ${totalWeight.toFixed(2)} kg%0A` +
+      `💵 *Total Value:* ₹${totalValue.toLocaleString('en-IN')}%0A` +
+      `📦 *Entries:* ${entries.filter(e => e.price > 0 && e.weight > 0).length}%0A%0A` +
+      `Generated via Anar Profit Calculator`;
+
+    window.open(`https://wa.me/?text=${message}`, '_blank');
+  };
+
+  const shareViaEmail = () => {
+    if (averagePrice === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate average first",
+      });
+      return;
+    }
+
+    const subject = `Average Price Calculator Report - ${new Date().toLocaleDateString('en-IN')}`;
+    const body = `Average Price Calculator Summary%0A%0A` +
+      `Weighted Average Price: ₹${averagePrice.toFixed(2)} per kg%0A` +
+      `Total Weight: ${totalWeight.toFixed(2)} kg%0A` +
+      `Total Value: ₹${totalValue.toLocaleString('en-IN')}%0A` +
+      `Number of Entries: ${entries.filter(e => e.price > 0 && e.weight > 0).length}%0A%0A` +
+      `Generated on: ${new Date().toLocaleString('en-IN')}`;
+
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  };
+
+  // Chart data
+  const chartData = entries
+    .filter(e => e.price > 0 && e.weight > 0)
+    .map((entry, index) => ({
+      name: `Entry ${index + 1}`,
+      value: entry.price * entry.weight,
+      price: entry.price,
+      weight: entry.weight
+    }));
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF6B9D'];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
       <Header />
@@ -285,6 +482,31 @@ Generated on: ${new Date().toLocaleDateString('en-IN')}`;
                   <Clipboard className="w-4 h-4 mr-2" />
                   Copy Summary
                 </Button>
+                <Button 
+                  onClick={startVoiceInput} 
+                  size="sm" 
+                  variant={isListening ? "default" : "outline"}
+                  disabled={isListening}
+                >
+                  {isListening ? <Mic className="w-4 h-4 mr-2 animate-pulse" /> : <MicOff className="w-4 h-4 mr-2" />}
+                  {isListening ? "Listening..." : "Voice"}
+                </Button>
+                {averagePrice > 0 && (
+                  <>
+                    <Button onClick={getAIAnalysis} size="sm" variant="outline" disabled={isAnalyzing}>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      {isAnalyzing ? "Analyzing..." : "AI Insights"}
+                    </Button>
+                    <Button onClick={shareToWhatsApp} size="sm" variant="outline">
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      WhatsApp
+                    </Button>
+                    <Button onClick={shareViaEmail} size="sm" variant="outline">
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Email
+                    </Button>
+                  </>
+                )}
                 {user && averagePrice > 0 && (
                   <>
                     <Button onClick={handleSave} size="sm" variant="outline">
@@ -362,32 +584,117 @@ Generated on: ${new Date().toLocaleDateString('en-IN')}`;
         </Card>
 
         {averagePrice > 0 && (
-          <Card className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
-            <CardHeader>
-              <CardTitle className="text-green-700 dark:text-green-300">
-                Weighted Average Result
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                ₹{averagePrice.toFixed(2)} per kg
-              </div>
-              <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
-                <div>
-                  <p className="text-muted-foreground">Entries</p>
-                  <p className="font-semibold">{entries.filter(e => e.price > 0 && e.weight > 0).length}</p>
+          <>
+            <Card className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
+              <CardHeader>
+                <CardTitle className="text-green-700 dark:text-green-300">
+                  Weighted Average Result
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                  ₹{averagePrice.toFixed(2)} per kg
                 </div>
-                <div>
-                  <p className="text-muted-foreground">Total Weight</p>
-                  <p className="font-semibold">{totalWeight.toFixed(2)} kg</p>
+                <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Entries</p>
+                    <p className="font-semibold">{entries.filter(e => e.price > 0 && e.weight > 0).length}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Total Weight</p>
+                    <p className="font-semibold">{totalWeight.toFixed(2)} kg</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Total Value</p>
+                    <p className="font-semibold">₹{totalValue.toLocaleString('en-IN')}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-muted-foreground">Total Value</p>
-                  <p className="font-semibold">₹{totalValue.toLocaleString('en-IN')}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {chartData.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-primary" />
+                    Price Distribution
+                  </CardTitle>
+                  <CardDescription>
+                    Visual breakdown of your purchases by total value
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value: number) => `₹${value.toLocaleString('en-IN')}`}
+                      />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="mt-4 space-y-2">
+                    {chartData.map((entry, index) => (
+                      <div key={index} className="flex justify-between items-center text-sm p-2 border rounded">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          />
+                          <span>{entry.name}</span>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-semibold">₹{entry.value.toLocaleString('en-IN')}</div>
+                          <div className="text-xs text-muted-foreground">
+                            ₹{entry.price}/kg × {entry.weight}kg
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {showAnalysis && (
+              <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950 dark:border-purple-800">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                    <Sparkles className="w-5 h-5" />
+                    AI Price Analysis
+                  </CardTitle>
+                  <CardDescription>
+                    Intelligent insights powered by AI
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {isAnalyzing ? (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                      <span className="ml-3 text-muted-foreground">Analyzing your prices...</span>
+                    </div>
+                  ) : (
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <p className="whitespace-pre-wrap text-foreground">{aiAnalysis}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
 
         {showHistory && user && (
