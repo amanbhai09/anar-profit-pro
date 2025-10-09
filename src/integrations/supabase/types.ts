@@ -197,6 +197,54 @@ export type Database = {
         }
         Relationships: []
       }
+      real_trades: {
+        Row: {
+          broker_name: string | null
+          broker_net_per_kg: number
+          created_at: string
+          farmer_broker_net: number | null
+          farmer_price_per_kg: number
+          grade: string
+          id: string
+          kg_loaded: number
+          location: string
+          notes: string | null
+          total_profit_loss: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          broker_name?: string | null
+          broker_net_per_kg: number
+          created_at?: string
+          farmer_broker_net?: number | null
+          farmer_price_per_kg: number
+          grade: string
+          id?: string
+          kg_loaded: number
+          location: string
+          notes?: string | null
+          total_profit_loss?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          broker_name?: string | null
+          broker_net_per_kg?: number
+          created_at?: string
+          farmer_broker_net?: number | null
+          farmer_price_per_kg?: number
+          grade?: string
+          id?: string
+          kg_loaded?: number
+          location?: string
+          notes?: string | null
+          total_profit_loss?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

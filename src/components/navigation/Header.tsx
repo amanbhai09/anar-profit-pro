@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Calculator, History, Shield } from 'lucide-react';
+import { LogOut, User, Calculator, History, Shield, TrendingUp, BarChart3 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export const Header = () => {
@@ -75,6 +75,18 @@ export const Header = () => {
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
                     Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/average-calculator" className="cursor-pointer">
+                      <Calculator className="mr-2 h-4 w-4" />
+                      Average Calculator
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/real-trade" className="cursor-pointer">
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Real Trade
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/history" className="cursor-pointer">

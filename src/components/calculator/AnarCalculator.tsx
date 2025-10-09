@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, Package, FileText, ShieldCheck, MessageCircle } from "lucide-react";
+import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, Package, FileText, ShieldCheck, MessageCircle, Share2, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/navigation/Header";
 import { useCalculations } from "@/hooks/useCalculations";
@@ -261,6 +261,83 @@ export const AnarCalculator = () => {
     }
   };
 
+  const shareToWhatsApp = () => {
+    if (!currentResult) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate first!",
+      });
+      return;
+    }
+
+    const message = `🍎 Anar Profit Calculator Results\n\n` +
+      `📊 Summary:\n` +
+      `Total Boxes: ${currentResult.totalBoxes}\n` +
+      `Gross Sale: ₹${currentResult.grossSale.toLocaleString('en-IN')}\n` +
+      `Net Sale: ₹${currentResult.netSale.toLocaleString('en-IN')}\n` +
+      `Total Cost: ₹${currentResult.totalCost.toLocaleString('en-IN')}\n` +
+      `${currentResult.profit >= 0 ? '💰 Profit' : '📉 Loss'}: ₹${Math.abs(currentResult.profit).toLocaleString('en-IN')}\n\n` +
+      `📦 Grades:\n` +
+      currentResult.grades.map(g => `${g.note}: ${g.boxes} boxes @ ₹${g.rate}`).join('\n');
+
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+    
+    toast({
+      title: "Success",
+      description: "Opening WhatsApp...",
+    });
+  };
+
+  const shareViaEmail = () => {
+    if (!currentResult) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate first!",
+      });
+      return;
+    }
+
+    const subject = `Anar Profit Calculation - ${new Date().toLocaleDateString()}`;
+    const body = `Anar Profit Calculator Results\n\n` +
+      `Summary:\n` +
+      `Total Boxes: ${currentResult.totalBoxes}\n` +
+      `Gross Sale: ₹${currentResult.grossSale.toLocaleString('en-IN')}\n` +
+      `Net Sale: ₹${currentResult.netSale.toLocaleString('en-IN')}\n` +
+      `Total Cost: ₹${currentResult.totalCost.toLocaleString('en-IN')}\n` +
+      `${currentResult.profit >= 0 ? 'Profit' : 'Loss'}: ₹${Math.abs(currentResult.profit).toLocaleString('en-IN')}\n\n` +
+      `Grades:\n` +
+      currentResult.grades.map(g => `${g.note}: ${g.boxes} boxes @ ₹${g.rate} = ₹${g.gross}`).join('\n');
+
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    toast({
+      title: "Success",
+      description: "Opening email client...",
+    });
+  };
+
+  const quickCopySummary = () => {
+    if (!currentResult) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please calculate first!",
+      });
+      return;
+    }
+
+    const summary = `Anar Profit: ₹${currentResult.profit.toLocaleString('en-IN')} | Boxes: ${currentResult.totalBoxes} | Gross: ₹${currentResult.grossSale.toLocaleString('en-IN')} | Net: ₹${currentResult.netSale.toLocaleString('en-IN')}`;
+    
+    navigator.clipboard.writeText(summary);
+    toast({
+      title: "Copied!",
+      description: "Summary copied to clipboard",
+    });
+  };
+
   // Find highest and lowest grossing grades for highlighting
   const gradesByGross = [...grades].sort((a, b) => b.gross - a.gross);
   const highestGrade = gradesByGross[0];
@@ -310,6 +387,18 @@ export const AnarCalculator = () => {
                 <Button onClick={downloadPDF} variant="outline" size="sm">
                   <FileText className="w-4 h-4 mr-2" />
                   PDF
+                </Button>
+                <Button onClick={shareToWhatsApp} variant="outline" size="sm" disabled={!currentResult}>
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  WhatsApp
+                </Button>
+                <Button onClick={shareViaEmail} variant="outline" size="sm" disabled={!currentResult}>
+                  <Mail className="w-4 h-4 mr-2" />
+                  Email
+                </Button>
+                <Button onClick={quickCopySummary} variant="outline" size="sm" disabled={!currentResult}>
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy
                 </Button>
                 <Button 
                   onClick={() => setShowSafeBuyDialog(true)} 
