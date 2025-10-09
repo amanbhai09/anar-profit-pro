@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Calculator, Plus, Trash2, Download, Save, History, Upload, Clipboard, Mic, MicOff, Sparkles, MessageSquare, TrendingUp, Share2 } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/ui/footer";
+import { BackButton } from "@/components/ui/BackButton";
+import { UniversalShare } from "@/components/shared/UniversalShare";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAverageCalculations } from "@/hooks/useAverageCalculations";
@@ -440,6 +442,12 @@ Generated on: ${new Date().toLocaleDateString('en-IN')}`;
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
       <Header />
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <BackButton />
+          <UniversalShare onExportPDF={handleExportPDF} />
+        </div>
+      </div>
       
       <div className="container mx-auto px-4 py-8 space-y-6">
         <Card className="relative overflow-hidden">

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Header } from '@/components/navigation/Header';
 import { Footer } from '@/components/ui/footer';
+import { BackButton } from '@/components/ui/BackButton';
+import { UniversalShare } from '@/components/shared/UniversalShare';
 import { useRealTrades } from '@/hooks/useRealTrades';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -98,6 +100,12 @@ const RealTrade = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <BackButton />
+          <UniversalShare />
+        </div>
+      </div>
       <main className="container mx-auto px-4 py-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>

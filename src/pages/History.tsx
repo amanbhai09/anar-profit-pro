@@ -1,5 +1,7 @@
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/ui/footer";
+import { BackButton } from "@/components/ui/BackButton";
+import { UniversalShare } from "@/components/shared/UniversalShare";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCalculations } from "@/hooks/useCalculations";
 import { ProfitChart } from "@/components/calculator/ProfitChart";
@@ -13,6 +15,12 @@ export const History = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
         <Header />
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <BackButton />
+            <UniversalShare />
+          </div>
+        </div>
         <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="w-12 h-12 animate-spin text-primary" />
@@ -27,6 +35,12 @@ export const History = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
       <Header />
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <BackButton />
+          <UniversalShare />
+        </div>
+      </div>
       
       <div className="container mx-auto px-4 py-8 space-y-6">
         <Card className="relative overflow-hidden">

@@ -1,13 +1,18 @@
 import { Heart, Calculator, MessageCircle, TrendingUp, Shield, FileText, BookOpen } from "lucide-react";
 import { Button } from "./button";
 import { Link } from "react-router-dom";
+import { RealTradeSection } from "./RealTradeSection";
 
 export const Footer = () => {
   return (
     <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-8">
+        {/* Real Trade Section */}
+        <div className="mb-8">
+          <RealTradeSection />
+        </div>
+
         <div className="flex flex-col items-center justify-center space-y-4">
-          
           {/* Footer Buttons */}
           <div className="flex flex-wrap justify-center gap-3">
             <Button 
