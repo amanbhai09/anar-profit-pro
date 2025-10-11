@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Share2, FileText, Table, Mail, Upload, Box } from "lucide-react";
+import { Share2, FileText, Table, Mail, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface UniversalShareProps {
@@ -15,7 +15,6 @@ interface UniversalShareProps {
   onExportExcel?: () => void;
   onShareEmail?: () => void;
   onUploadInvoice?: () => void;
-  onBoxFill?: () => void;
 }
 
 export const UniversalShare = ({
@@ -23,7 +22,6 @@ export const UniversalShare = ({
   onExportExcel,
   onShareEmail,
   onUploadInvoice,
-  onBoxFill,
 }: UniversalShareProps) => {
   const { toast } = useToast();
 
@@ -63,10 +61,6 @@ export const UniversalShare = ({
         <DropdownMenuItem onClick={() => handleAction(onUploadInvoice, "Upload Invoice")}>
           <Upload className="mr-2 h-4 w-4" />
           Upload Invoice
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleAction(onBoxFill, "Box Fill Options")}>
-          <Box className="mr-2 h-4 w-4" />
-          Box Fill Options
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
