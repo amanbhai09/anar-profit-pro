@@ -14,8 +14,6 @@ import { useAverageCalculations } from "@/hooks/useAverageCalculations";
 import { exportAverageToPDF } from "@/utils/averagePdfExport";
 import { supabase } from "@/integrations/supabase/client";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { UniversalShare } from "@/components/shared/UniversalShare";
-
 
 interface PriceEntry {
   id: string;

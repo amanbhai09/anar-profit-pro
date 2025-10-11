@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Download, Calculator, TrendingUp, TrendingDown, Copy, Trash2, AlertTriangle, Package, FileText, ShieldCheck, MessageCircle, Share2, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/navigation/Header";
+import { UniversalShare } from "@/components/shared/UniversalShare";
 import { useCalculations } from "@/hooks/useCalculations";
 import { GradeData, CalculationResult, CostSettings } from "@/types/calculator";
 import { GradeRow } from "./GradeRow";
@@ -380,22 +381,11 @@ export const AnarCalculator = () => {
                 <Button onClick={handleSaveCalculation} size="sm" className="btn-success">
                   Save Calculation
                 </Button>
-                <Button onClick={downloadCSV} variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  CSV
-                </Button>
-                <Button onClick={downloadPDF} variant="outline" size="sm">
-                  <FileText className="w-4 h-4 mr-2" />
-                  PDF
-                </Button>
-                <Button onClick={shareToWhatsApp} variant="outline" size="sm" disabled={!currentResult}>
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  WhatsApp
-                </Button>
-                <Button onClick={shareViaEmail} variant="outline" size="sm" disabled={!currentResult}>
-                  <Mail className="w-4 h-4 mr-2" />
-                  Email
-                </Button>
+                <UniversalShare 
+                  onExportPDF={downloadPDF}
+                  onExportExcel={downloadCSV}
+                  onShareEmail={shareViaEmail}
+                />
                 <Button onClick={quickCopySummary} variant="outline" size="sm" disabled={!currentResult}>
                   <Copy className="w-4 h-4 mr-2" />
                   Copy

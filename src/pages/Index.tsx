@@ -1,6 +1,7 @@
 import { AnarCalculator } from "@/components/calculator/AnarCalculator";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/contexts/AuthContext";
+import { UniversalShare } from "@/components/shared/UniversalShare";
 import { useState } from "react";
 
 const Index = () => {

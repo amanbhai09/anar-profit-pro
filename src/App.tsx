@@ -11,6 +11,9 @@ import Admin from "./pages/Admin";
 import AverageCalculator from "./pages/AverageCalculator";
 import RealTrade from "./pages/RealTrade";
 import History from "./pages/History";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +33,9 @@ const App = () => (
               <Route path="/average-calculator" element={<AverageCalculator />} />
               <Route path="/real-trade" element={<RealTrade />} />
               <Route path="/history" element={<History />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<Privacy />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
