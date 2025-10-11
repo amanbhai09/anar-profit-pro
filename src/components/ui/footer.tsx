@@ -14,6 +14,28 @@ export const Footer = () => {
               size="sm"
               asChild
             >
+              <Link to="/home">
+                <Calculator className="w-4 h-4 mr-2" />
+                Home
+              </Link>
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              size="sm"
+              asChild
+            >
+              <Link to="/calculator">
+                <Calculator className="w-4 h-4 mr-2" />
+                Calculator
+              </Link>
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              size="sm"
+              asChild
+            >
               <Link to="/average-calculator">
                 <Calculator className="w-4 h-4 mr-2" />
                 Avg Calculator

@@ -6,8 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
+import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import Calculator from "./pages/Calculator";
 import AverageCalculator from "./pages/AverageCalculator";
 import RealTrade from "./pages/RealTrade";
 import History from "./pages/History";
@@ -28,6 +30,8 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/calculator" element={<Calculator />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/average-calculator" element={<AverageCalculator />} />
