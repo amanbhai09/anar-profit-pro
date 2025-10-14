@@ -151,6 +151,9 @@ const Admin = () => {
 
       const formattedCalculations: CalculationResult[] = (calculationsData || []).map((calc) => {
         const userProfile = profilesMap.get(calc.user_id);
+        const farmerCost = (calc.farmer_rate_kg || 0) * (calc.kg_per_box || 0) * (calc.total_boxes || 0);
+        const netCredit = (calc.gross_sale || 0) - (calc.commission_amt || 0) - (calc.total_packing_cost || 0) - (calc.total_labour_cost || 0) - (calc.total_utility_cost || 0) - (calc.total_transport_cost || 0);
+        
         return {
           id: calc.id,
           timestamp: new Date(calc.timestamp),
@@ -165,6 +168,8 @@ const Admin = () => {
           grossSale: calc.gross_sale,
           commissionAmt: calc.commission_amt,
           netSale: calc.net_sale,
+          netCredit,
+          farmerCost,
           totalCost: calc.total_cost,
           profit: calc.profit,
           totalTransportCost: calc.total_transport_cost,
@@ -255,7 +260,7 @@ const Admin = () => {
   const exportData = () => {
     const headers = [
       'Date', 'User', 'Email', 'Farmer', 'Buyer', 'Trip ID', 
-      'Total Boxes', 'Gross Sale', 'Net Sale', 'Total Cost', 'Profit'
+      'Total Boxes', 'Gross Sale', 'Farmer Cost', 'Net Credit', 'Total Cost', 'Profit'
     ];
     
     const rows = filteredCalculations.map(calc => [
@@ -267,7 +272,8 @@ const Admin = () => {
       calc.tripId || 'N/A',
       calc.totalBoxes,
       calc.grossSale,
-      calc.netSale,
+      calc.farmerCost,
+      calc.netCredit,
       calc.totalCost,
       calc.profit
     ]);

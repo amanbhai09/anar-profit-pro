@@ -98,7 +98,8 @@ export const exportCalculationToPDF = (calculation: CalculationResult) => {
     ['Gross Sale', `₹${calculation.grossSale.toLocaleString('en-IN')}`],
     ['Commission (%)', `${calculation.commission}%`],
     ['Commission Amount', `₹${calculation.commissionAmt.toLocaleString('en-IN')}`],
-    ['Net Sale', `₹${calculation.netSale.toLocaleString('en-IN')}`],
+    ['Farmer Cost', `₹${calculation.farmerCost.toLocaleString('en-IN')}`],
+    ['Net Credit', `₹${calculation.netCredit.toLocaleString('en-IN')}`],
     ['Total Cost', `₹${calculation.totalCost.toLocaleString('en-IN')}`],
     ['Final Profit/Loss', `₹${calculation.profit.toLocaleString('en-IN')}`],
   ];

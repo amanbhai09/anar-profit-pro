@@ -49,8 +49,16 @@ export const SummaryCards = ({ result }: SummaryCardsProps) => {
       bgColor: "bg-warning/10",
     },
     {
-      title: "Net Sale",
-      value: `₹${result.netSale.toLocaleString('en-IN')}`,
+      title: "Farmer Cost",
+      value: `₹${result.farmerCost.toLocaleString('en-IN')}`,
+      subtitle: `₹${result.farmerRateKg}/kg × ${result.kgPerBox}kg`,
+      icon: Users,
+      color: "text-amber-600",
+      bgColor: "bg-amber-100/50 dark:bg-amber-900/20",
+    },
+    {
+      title: "Net Credit",
+      value: `₹${result.netCredit.toLocaleString('en-IN')}`,
       icon: DollarSign,
       color: "text-success",
       bgColor: "bg-success/10",

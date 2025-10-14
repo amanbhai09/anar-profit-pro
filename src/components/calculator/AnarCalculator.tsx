@@ -128,16 +128,19 @@ export const AnarCalculator = () => {
     const commissionAmt = grossSale * (costSettings.commission / 100);
     const netSale = grossSale - commissionAmt;
     
-    const farmerPerBox = costSettings.farmerRateKg * costSettings.kgPerBox;
-    const costPerBox = farmerPerBox + costSettings.transport + costSettings.packing + costSettings.labour + costSettings.miscellaneous;
-    const totalCost = costPerBox * totalBoxes;
-    
-    const profit = netSale - totalCost;
-    
     const totalTransportCost = costSettings.transport * totalBoxes;
     const totalPackingCost = costSettings.packing * totalBoxes;
     const totalLabourCost = costSettings.labour * totalBoxes;
     const totalUtilityCost = costSettings.miscellaneous * totalBoxes;
+    
+    const netCredit = grossSale - commissionAmt - totalPackingCost - totalLabourCost - totalUtilityCost - totalTransportCost;
+    
+    const farmerPerBox = costSettings.farmerRateKg * costSettings.kgPerBox;
+    const farmerCost = farmerPerBox * totalBoxes;
+    const costPerBox = farmerPerBox + costSettings.transport + costSettings.packing + costSettings.labour + costSettings.miscellaneous;
+    const totalCost = costPerBox * totalBoxes;
+    
+    const profit = netSale - totalCost;
     
     // Add profit per box and margin % to grades
     const gradesWithMetrics = grades.map(grade => ({
@@ -160,6 +163,8 @@ export const AnarCalculator = () => {
       grossSale,
       commissionAmt,
       netSale,
+      netCredit,
+      farmerCost,
       totalCost,
       profit,
       totalTransportCost,
@@ -276,7 +281,7 @@ export const AnarCalculator = () => {
       `📊 Summary:\n` +
       `Total Boxes: ${currentResult.totalBoxes}\n` +
       `Gross Sale: ₹${currentResult.grossSale.toLocaleString('en-IN')}\n` +
-      `Net Sale: ₹${currentResult.netSale.toLocaleString('en-IN')}\n` +
+      `Net Credit: ₹${currentResult.netCredit.toLocaleString('en-IN')}\n` +
       `Total Cost: ₹${currentResult.totalCost.toLocaleString('en-IN')}\n` +
       `${currentResult.profit >= 0 ? '💰 Profit' : '📉 Loss'}: ₹${Math.abs(currentResult.profit).toLocaleString('en-IN')}\n\n` +
       `📦 Grades:\n` +
@@ -306,7 +311,7 @@ export const AnarCalculator = () => {
       `Summary:\n` +
       `Total Boxes: ${currentResult.totalBoxes}\n` +
       `Gross Sale: ₹${currentResult.grossSale.toLocaleString('en-IN')}\n` +
-      `Net Sale: ₹${currentResult.netSale.toLocaleString('en-IN')}\n` +
+      `Net Credit: ₹${currentResult.netCredit.toLocaleString('en-IN')}\n` +
       `Total Cost: ₹${currentResult.totalCost.toLocaleString('en-IN')}\n` +
       `${currentResult.profit >= 0 ? 'Profit' : 'Loss'}: ₹${Math.abs(currentResult.profit).toLocaleString('en-IN')}\n\n` +
       `Grades:\n` +
@@ -330,7 +335,7 @@ export const AnarCalculator = () => {
       return;
     }
 
-    const summary = `Anar Profit: ₹${currentResult.profit.toLocaleString('en-IN')} | Boxes: ${currentResult.totalBoxes} | Gross: ₹${currentResult.grossSale.toLocaleString('en-IN')} | Net: ₹${currentResult.netSale.toLocaleString('en-IN')}`;
+    const summary = `Anar Profit: ₹${currentResult.profit.toLocaleString('en-IN')} | Boxes: ${currentResult.totalBoxes} | Gross: ₹${currentResult.grossSale.toLocaleString('en-IN')} | Net Credit: ₹${currentResult.netCredit.toLocaleString('en-IN')}`;
     
     navigator.clipboard.writeText(summary);
     toast({

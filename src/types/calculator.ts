@@ -22,6 +22,8 @@ export interface CalculationResult {
   grossSale: number;
   commissionAmt: number;
   netSale: number;
+  netCredit: number;
+  farmerCost: number;
   totalCost: number;
   profit: number;
   totalTransportCost: number;

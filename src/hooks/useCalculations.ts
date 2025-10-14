@@ -35,34 +35,41 @@ export const useCalculations = () => {
 
       if (error) throw error;
 
-      const formattedCalculations: CalculationResult[] = (data || []).map((calc) => ({
-        id: calc.id,
-        timestamp: new Date(calc.timestamp),
-        farmerName: calc.farmer_name,
-        buyerName: calc.buyer_name,
-        farmerContact: calc.farmer_contact,
-        buyerContact: calc.buyer_contact,
-        tripId: calc.trip_id,
-        notes: calc.notes,
-        grades: calc.grades as any, // Cast to any to handle JSONB type
-        totalBoxes: calc.total_boxes,
-        grossSale: calc.gross_sale,
-        commissionAmt: calc.commission_amt,
-        netSale: calc.net_sale,
-        totalCost: calc.total_cost,
-        profit: calc.profit,
-        totalTransportCost: calc.total_transport_cost,
-        totalPackingCost: calc.total_packing_cost,
-        totalLabourCost: calc.total_labour_cost,
-        totalUtilityCost: calc.total_utility_cost,
-        commission: calc.commission,
-        transport: calc.transport,
-        packing: calc.packing,
-        labour: calc.labour,
-        miscellaneous: calc.miscellaneous,
-        farmerRateKg: calc.farmer_rate_kg,
-        kgPerBox: calc.kg_per_box,
-      }));
+      const formattedCalculations: CalculationResult[] = (data || []).map((calc) => {
+        const farmerCost = (calc.farmer_rate_kg || 0) * (calc.kg_per_box || 0) * (calc.total_boxes || 0);
+        const netCredit = (calc.gross_sale || 0) - (calc.commission_amt || 0) - (calc.total_packing_cost || 0) - (calc.total_labour_cost || 0) - (calc.total_utility_cost || 0) - (calc.total_transport_cost || 0);
+        
+        return {
+          id: calc.id,
+          timestamp: new Date(calc.timestamp),
+          farmerName: calc.farmer_name,
+          buyerName: calc.buyer_name,
+          farmerContact: calc.farmer_contact,
+          buyerContact: calc.buyer_contact,
+          tripId: calc.trip_id,
+          notes: calc.notes,
+          grades: calc.grades as any, // Cast to any to handle JSONB type
+          totalBoxes: calc.total_boxes,
+          grossSale: calc.gross_sale,
+          commissionAmt: calc.commission_amt,
+          netSale: calc.net_sale,
+          netCredit,
+          farmerCost,
+          totalCost: calc.total_cost,
+          profit: calc.profit,
+          totalTransportCost: calc.total_transport_cost,
+          totalPackingCost: calc.total_packing_cost,
+          totalLabourCost: calc.total_labour_cost,
+          totalUtilityCost: calc.total_utility_cost,
+          commission: calc.commission,
+          transport: calc.transport,
+          packing: calc.packing,
+          labour: calc.labour,
+          miscellaneous: calc.miscellaneous,
+          farmerRateKg: calc.farmer_rate_kg,
+          kgPerBox: calc.kg_per_box,
+        };
+      });
 
       setCalculations(formattedCalculations);
     } catch (error) {
@@ -104,6 +111,8 @@ export const useCalculations = () => {
           gross_sale: calculation.grossSale,
           commission_amt: calculation.commissionAmt,
           net_sale: calculation.netSale,
+          net_credit: calculation.netCredit,
+          farmer_cost: calculation.farmerCost,
           total_cost: calculation.totalCost,
           profit: calculation.profit,
           total_transport_cost: calculation.totalTransportCost,
